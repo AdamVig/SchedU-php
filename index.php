@@ -193,8 +193,8 @@ function makeSchedule($userData, $daySchedule, $school)
 function runScript()
 {
 
-    $debug = false;
-    $sendToMe = false;
+    $debug = true;
+    $sendToMe = true;
 
     $nl = "\r\n";
     $weekday = date("N"); //1 for monday, 7 for sunday
