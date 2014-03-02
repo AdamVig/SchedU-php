@@ -438,7 +438,7 @@ function makeTahanto($userData, $daySchedule)
 
     $output = "";
 
-    $dayLetterArray = array('A' => '1', 'B' => '2', 'C' => '3', 'D' => '4', 'E' => '5', 'F' => '6', 'G' => '7');
+    $dayLetterArray = array('A' => '1', 'B' => '2', 'C' => '3', 'D' => '4', 'E' => '5', 'F' => '6');
 
     //Parse day schedule into letter and number
     $dayLetter = substr($daySchedule, 0, 1);

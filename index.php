@@ -1,7 +1,7 @@
 <?php
 
 require_once "../make-schedule.php";
-require_once "helpers.php";
+require_once "../helpers.php";
 
 //make sure Zend, Twitter, and Twilio are included:
 set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
@@ -62,7 +62,7 @@ function getDaySchedule($day, $calendar, $school)
     try {
         $output = $calendar->getCalendarEventFeed($query);
     } catch (Zend_Gdata_App_Exception $e) {
-        sendSms($myPhone, "Error getting calendar event."); //Report error
+        report($myPhone, "Error getting calendar event."); //Report error
     }
 
     $output = $output[0]->title; //String
@@ -74,7 +74,7 @@ function getDaySchedule($day, $calendar, $school)
 //=============================================================
 
 /**
- * Retrieves table of messages from database
+ * Retrieves table of custom messages from database
  * @return 2d assoc array or boolean containing all messages or false if no messages
  */
 function getCustomMessages()
@@ -208,8 +208,8 @@ function runScript()
         $schools = array(
             "nashoba",
             "bromfield",
-            "hudson"//,
-            //"tahanto"
+            "hudson",
+            "tahanto"
         );
         $messages = getCustomMessages();
         $daySchedules = array();
@@ -220,8 +220,8 @@ function runScript()
 
         if ($daySchedules["nashoba"] != "No School" ||
             $daySchedules["bromfield"] != "No School" ||
-            $daySchedules["hudson"] != "No School" /*||
-            $daySchedules["tahanto"] != "No School" */) { //If any school has school today
+            $daySchedules["hudson"] != "No School" ||
+            $daySchedules["tahanto"] != "No School") { //If any school has school today
 
 
             //------------------------------------------------------
@@ -236,9 +236,7 @@ function runScript()
 
             //GET TWILIO GOING
             require_once("twilio-php/Services/Twilio.php");
-            $AccountSid = "AC4c45ba306f764d2327fe824ec0e46347";
-            $AuthToken = "5121fd9da17339d86bf624f9fabefebe";
-            $client = new Services_Twilio($AccountSid, $AuthToken);
+            $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
             //OPEN AND QUERY DATABASE
             $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");

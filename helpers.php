@@ -2,9 +2,18 @@
 
 set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
 
+
+function report(Twilio $client, Message $body)
+{
+    $sms = $client->account->messages->sendMessage(
+        "+1".$numbers['1'], //From
+        "+1" . $myPhone, //To
+        $report //Body
+    );
+}
+
 function getUserDataPhone($phone)
 {
-
     $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
     $query = "SELECT * FROM users WHERE PhoneNumber=$phone";
     $result = $database->query($query);
