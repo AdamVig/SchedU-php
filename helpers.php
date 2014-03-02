@@ -2,13 +2,22 @@
 
 set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
 
-
-function report(Twilio $client, Message $body)
+function report(Twilio $client, Message $report)
 {
+    require "../numbers.php";
     $sms = $client->account->messages->sendMessage(
         "+1".$numbers['1'], //From
-        "+1" . $myPhone, //To
+        "+15086884042", //To
         $report //Body
+    );
+}
+
+function send(Twilio $client, Message $body, Phone $to, Phone $from)
+{
+    $sms = $client->account->messages->sendMessage(
+        "+1".$from, //From
+        "+1".$to, //To
+        $body      //Body
     );
 }
 

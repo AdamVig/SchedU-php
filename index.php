@@ -62,7 +62,7 @@ function getDaySchedule($day, $calendar, $school)
     try {
         $output = $calendar->getCalendarEventFeed($query);
     } catch (Zend_Gdata_App_Exception $e) {
-        report($myPhone, "Error getting calendar event."); //Report error
+        sendSms($myPhone, "Error getting calendar event."); //Report error
     }
 
     $output = $output[0]->title; //String
@@ -203,7 +203,7 @@ function runScript()
 
         //------------------------------------------------------
         //GET DAY SCHEDULES
-        $dayToGet = 'today';
+    $dayToGet = 'tomorrow';
         $calendar = openCalendar();
         $schools = array(
             "nashoba",
@@ -222,7 +222,6 @@ function runScript()
             $daySchedules["bromfield"] != "No School" ||
             $daySchedules["hudson"] != "No School" ||
             $daySchedules["tahanto"] != "No School") { //If any school has school today
-
 
             //------------------------------------------------------
             //START LOG
@@ -259,7 +258,7 @@ function runScript()
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
-                        sendSms($myPhone, "makeSchedule returned null value, uh oh!");
+                        report($client, "makeSchedule returned null value, uh oh!");
                         break; //Get out of while loop, finish up other stuff
                     }
 
@@ -301,11 +300,7 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        $sms = $client->account->messages->sendMessage(
-                            "+1" . $number, // from
-                            "+1" . $phone, // to
-                            $body               //body
-                        );
+                        send($client, $body, $phone, $from);
                         $messagesSent++;
                         //------------------------------------------------------
 
@@ -322,11 +317,7 @@ function runScript()
 
                             //------------------------------------------------------
                             //SEND MESSAGE
-                            $sms = $client->account->messages->sendMessage(
-                                "+1" . $number, // from
-                                "+1" . $myPhone, // to
-                                $body               //body
-                            );
+                            report($client, $body);
                             //------------------------------------------------------
 
                             //------------------------------------------------------
@@ -359,11 +350,6 @@ function runScript()
                         tweet($tweetBody);
                     }
                     //------------------------------------------------------
-
-
-
-
-                    //------------------------------------------------------
                 }//End if school
             }//End while rows in database
             //------------------------------------------------------
@@ -375,14 +361,10 @@ function runScript()
             $executionStop = new DateTime();
             $elapsedTime = date_diff($executionStop, $executionStart, true); //absolute value = true
             $report = "The SchedU script took " . $elapsedTime->format('%H:%I:%S') . " to execute 
-                        and sent " . getMessagesSent($client) . " to " . numbersSentTo($client) . "/" . $messagesSent . " users.";
+                        and sent " . getMessagesSent($client) . " messages to " . $messagesSent . " users.";
 
             if ($debug == false) {
-                $sms = $client->account->messages->sendMessage(
-                    "+1".$numbers['1'], //From
-                    "+1" . $myPhone, //To
-                    $report //Body
-                );
+                report($client, $report);
             }
             //------------------------------------------------------
 
