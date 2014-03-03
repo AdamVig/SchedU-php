@@ -192,7 +192,6 @@ function makeSchedule($userData, $daySchedule, $school)
 
 function runScript()
 {
-
     $debug = false;
     $sendToMe = false;
 
