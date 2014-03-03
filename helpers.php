@@ -2,31 +2,31 @@
 
 set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
 
-function report(Twilio $client, Message $report)
-{
-    require "../numbers.php";
-    $sms = $client->account->messages->sendMessage(
-        "+1".$numbers['1'], //From
-        "+15086884042", //To
-        $report //Body
-    );
-}
-
-function send(Twilio $client, Message $body, Phone $to, Phone $from)
-{
-    $sms = $client->account->messages->sendMessage(
-        "+1".$from, //From
-        "+1".$to, //To
-        $body      //Body
-    );
-}
-
 function getUserDataPhone($phone)
 {
+
     $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
     $query = "SELECT * FROM users WHERE PhoneNumber=$phone";
     $result = $database->query($query);
     return $result->fetch_assoc();
+}
+
+function report($client, $body)
+{
+    $sms = $client->account->messages->sendMessage(
+        "+16505427238", //From
+        "+15086884042", //To
+        $body           //Body
+    );
+}
+
+function send($client, $body, $to, $from)
+{
+    $sms = $client->account->messages->sendMessage(
+        "+1".$from, //From
+        "+1".$to, //To
+        $body       //Body
+    );
 }
 
 function sendMessageTo($who, $content)
@@ -179,7 +179,7 @@ function getSchools()
  * @param DateTime $endDate   ending date
  * @return string            formatted version of number of days
  */
-function getWorkingDays($startDate, $endDate)
+function getWorkingDays(DateTime $startDate, DateTime $endDate)
 {
 
     //The total number of days between the two dates. We compute the no. of seconds and divide it to 60*60*24
@@ -234,36 +234,9 @@ function getWorkingDays($startDate, $endDate)
 }
 
 
-/**
- * Gets number of messages sent today
- * from Twilio log
- * @param Twilio  $client       Necessary for reading log
- * @return string $messagesSent Number of messages sent
- */
 function getMessagesSent($client)
 {
     $smsRecord = $client->account->usage_records->today->getCategory('sms-outbound');
     $messagesSent = $smsRecord->usage;
     return $messagesSent;
-}
-
-
-/**
- * Returns number of unique numbers sent to via API today
- * @param   Twilio client object $client    Contains Twilio client
- * @return  Integer                         Unique numbers sent to
- */
-function numbersSentTo($client)
-{
-    $numbers = array();
-
-    //For messages sent today
-    foreach ($client->account->messages->getIterator(0, 50, array('DateSent' => date('Y-m-d'))) as $message) {
-        if ($message->direction == 'outbound-api') { //Sent via API
-            if (!in_array($message->to, $numbers)) {   //Not already added
-                array_push($numbers, $message->to);    //Add to array
-            }
-        }
-    }
-    return count($numbers);
 }

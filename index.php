@@ -1,6 +1,6 @@
 <?php
 
-//Test
+//Test deploy
 
 require_once "../make-schedule.php";
 require_once "../helpers.php";
@@ -64,7 +64,7 @@ function getDaySchedule($day, $calendar, $school)
     try {
         $output = $calendar->getCalendarEventFeed($query);
     } catch (Zend_Gdata_App_Exception $e) {
-        sendSms($myPhone, "Error getting calendar event."); //Report error
+        sendToMe("Error getting calendar event."); //Report error
     }
 
     $output = $output[0]->title; //String
@@ -196,7 +196,7 @@ function runScript()
 {
 
     $debug = true;
-    $sendToMe = true;
+    $sendToMe = false;
 
     $nl = "\r\n";
     $weekday = date("N"); //1 for monday, 7 for sunday
@@ -260,7 +260,7 @@ function runScript()
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
-                        report($client, "makeSchedule returned null value, uh oh!");
+                        report($client, "makeSchedule for $school returned null value, uh oh!");
                         break; //Get out of while loop, finish up other stuff
                     }
 
@@ -317,10 +317,7 @@ function runScript()
                     } else { //if debug mode, only send to me
                         if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
 
-                            //------------------------------------------------------
-                            //SEND MESSAGE
                             report($client, $body);
-                            //------------------------------------------------------
 
                             //------------------------------------------------------
                             //WRITE TO LOG
@@ -407,21 +404,11 @@ function openCalendar()
 
 
 //SEND SMS
-function sendSms($to, $body)
+function sendToMe($body)
 {
-
     require_once("twilio-php/Services/Twilio.php");
-
-    $AccountSid = "AC4c45ba306f764d2327fe824ec0e46347";
-    $AuthToken = "5121fd9da17339d86bf624f9fabefebe";
-
-    $client = new Services_Twilio($AccountSid, $AuthToken);
-
-    $sms = $client->account->messages->sendMessage(
-        "+12075172433", // from
-        "+1" . $to, // to
-        $body
-    );
+    $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+    report($client, $body);
 }
 
 
