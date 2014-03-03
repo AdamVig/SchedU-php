@@ -1,6 +1,6 @@
 <?php
 
-//Test deploy
+//Test deploy 2
 
 require_once "../make-schedule.php";
 require_once "../helpers.php";
