@@ -289,7 +289,7 @@ function runScript()
                     //------------------------------------------------------
                     //DECIDE WHICH PHONE NUMBER TO USE
                     require_once("../numbers.php");
-                    $number = $numbers[$userData['Number']];
+                    $fromNumber = $numbers[$userData['Number']];
                     //------------------------------------------------------
 
 
@@ -299,7 +299,7 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        send($client, $body, $phone, $from);
+                        send($client, $body, $phone, $fromNumber);
                         $messagesSent++;
                         //------------------------------------------------------
 
@@ -356,8 +356,8 @@ function runScript()
             //REPORT INFORMATION
             $executionStop = new DateTime();
             $elapsedTime = date_diff($executionStop, $executionStart, true); //absolute value = true
-            $report = "The SchedU script took " . $elapsedTime->format('%H:%I:%S') . " to execute 
-                        and sent " . getMessagesSent($client) . " messages to " . $messagesSent . " users.";
+            $report = "The SchedU script took " . $elapsedTime->format('%H:%I:%S') . " to execute ".
+                      "and sent " . getMessagesSent($client) . " messages to " . $messagesSent . " users.";
 
             if ($debug == false) {
                 report($client, $report);
