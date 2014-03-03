@@ -1,7 +1,5 @@
 <?php
 
-//Test deploy 2
-
 require_once "../make-schedule.php";
 require_once "../helpers.php";
 
@@ -195,7 +193,7 @@ function makeSchedule($userData, $daySchedule, $school)
 function runScript()
 {
 
-    $debug = true;
+    $debug = false;
     $sendToMe = false;
 
     $nl = "\r\n";
@@ -205,7 +203,7 @@ function runScript()
 
         //------------------------------------------------------
         //GET DAY SCHEDULES
-    $dayToGet = 'tomorrow';
+        $dayToGet = 'today';
         $calendar = openCalendar();
         $schools = array(
             "nashoba",
