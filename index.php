@@ -192,7 +192,7 @@ function makeSchedule($userData, $daySchedule, $school)
 
 function runScript()
 {
-    $debug = true;
+    $debug = false;
     $sendToMe = false;
 
     $nl = "\r\n";
@@ -299,8 +299,10 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        send($client, $body, $phone, $fromNumber);
-                        $messagesSent++;
+                        if ($messagesSent > 69) {
+                            send($client, $body, $phone, $fromNumber);
+                            $messagesSent++;
+                        }
                         //------------------------------------------------------
 
                         //------------------------------------------------------
