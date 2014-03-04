@@ -450,7 +450,7 @@ function makeTahanto($userData, $daySchedule)
 
         if ($dayId == "Mc" && $userData['Grade'] == 'sophomore') {
 
-            $description = "You have " . substr($daySchedule, 6) . " MCAS today.";
+            $description = "You have " . substr($daySchedule, 5) . " MCAS today.";
             $classOrder = array($description);
 
         } else { //Normal day
@@ -484,7 +484,7 @@ function makeTahanto($userData, $daySchedule)
             $dayId == "Fn") { //Finals: (TBD)
 
             $classOrder = array();
-            $periodOrder = explode(",", substr($daySchedule, 6)); //delimiter, string
+            $periodOrder = explode(",", substr($daySchedule, 5)); //delimiter, string
 
             //Go through letters in letter order array
             foreach ($periodOrder as $period) {
@@ -517,7 +517,7 @@ function makeTahanto($userData, $daySchedule)
 
         } else if ($dayId == "Sp") { //Special day: "A1 Sp Career Day"
 
-            $classOrder = array(substr($daySchedule, 6));
+            $classOrder = array(substr($daySchedule, 5));
 
         }
     }
