@@ -299,10 +299,8 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        if ($messagesSent > 69) {
-                            send($client, $body, $phone, $fromNumber);
-                            $messagesSent++;
-                        }
+                        send($client, $body, $phone, $fromNumber);
+                        $messagesSent++;
                         //------------------------------------------------------
 
                         //------------------------------------------------------
