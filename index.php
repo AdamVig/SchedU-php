@@ -192,7 +192,7 @@ function makeSchedule($userData, $daySchedule, $school)
 
 function runScript()
 {
-    $debug = false;
+    $debug = true;
     $sendToMe = false;
 
     $nl = "\r\n";
@@ -311,19 +311,18 @@ function runScript()
                         fwrite($log, $loginfo);
                         //------------------------------------------------------
 
-                    } else { //if debug mode, only send to me
+                    } else { //if debug mode, log all and send to me
+
+                        //------------------------------------------------------
+                        //WRITE TO LOG
+                        $loginfo  = str_repeat('-', 40) . $nl;
+                        $loginfo .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
+                        $loginfo .= $body . $nl;
+                        fwrite($log, $loginfo);
+                        //------------------------------------------------------
+
                         if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
-
                             report($client, $body);
-
-                            //------------------------------------------------------
-                            //WRITE TO LOG
-                            $loginfo  = str_repeat('-', 40) . $nl;
-                            $loginfo .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
-                            $loginfo .= $body . $nl;
-                            fwrite($log, $loginfo);
-                            //------------------------------------------------------
-
                         } else if ($userData['PhoneNumber'] == $myPhone && $sendToMe == false) {
                             $body = str_replace("\r\n", "<br>", $body);
                             echo $body . "<br>";
