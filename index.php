@@ -3,9 +3,6 @@
 require_once "../make-schedule.php";
 require_once "../helpers.php";
 
-//make sure Zend, Twitter, and Twilio are included:
-set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
-
 //=============================================================
 
 
