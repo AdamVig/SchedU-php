@@ -189,8 +189,8 @@ function makeSchedule($userData, $daySchedule, $school)
 
 function runScript()
 {
-    $debug = false;
-    $sendToMe = false;
+    $debug = true;
+    $sendToMe = true;
 
     $nl = "\r\n";
     $weekday = date("N"); //1 for monday, 7 for sunday
@@ -210,7 +210,7 @@ function runScript()
         $messages = getCustomMessages();
         $daySchedules = array();
         foreach ($schools as $schoolName) {
-            $daySchedules[$schoolName] = getDaySchedule($dayToGet, $calendar, $schoolName);
+            $daySchedules[$schoolName] = "nothing yet"; //TODO: getDay();
         }
         //------------------------------------------------------
 
@@ -230,11 +230,12 @@ function runScript()
             }
 
             //GET TWILIO GOING
-            require_once("twilio-php/Services/Twilio.php");
+            require_once("../lib/twilio-php/Services/Twilio.php");
             $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
             //OPEN AND QUERY DATABASE
-            $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
+            $url=parse_url(getenv("CLEARDB_DATABASE_URL"));
+            $database = new mysqli($url["host"], $url["user"], $url["pass"], substr($url["path"], 1));
             $query = "SELECT * FROM users ORDER BY 'ID' ASC";
             $result = $database->query($query);
             //------------------------------------------------------
