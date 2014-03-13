@@ -1,5 +1,7 @@
 <?php
-
+error_reporting(-1);
+ini_set('display_errors', 1);
+ini_set('html_errors', 1);
 require_once "../make-schedule.php";
 require_once "../index.php";
 require_once "twilio-php/Services/Twilio.php";
