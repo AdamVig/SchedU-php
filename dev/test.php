@@ -28,4 +28,4 @@ $u = array(
 //$d = getDaySchedule('monday', openCalendar(), "tahanto");
 $d = "D Er A,D,E,F";
 
-report($client, "Testing from Heroku!");
+report($client, "Testing from Heroku on March 20!");

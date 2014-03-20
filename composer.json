@@ -1,0 +1,6 @@
+{
+    "require": {
+        "twilio/sdk": "3.12.4",
+        "j7mbo/twitter-api-php": "dev-master"
+    }
+}
