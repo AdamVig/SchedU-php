@@ -2,9 +2,9 @@
 error_reporting(-1);
 ini_set('display_errors', 1);
 ini_set('html_errors', 1);
-require_once "../make-schedule.php";
-require_once "../index.php";
-require_once "../vendor/autoload.php";
+require_once "/www/make-schedule.php";
+require_once "/www/index.php";
+require_once "/www/vendor/autoload.php";
 $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
 $u = array(
