@@ -35,14 +35,14 @@ $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
 $accountKey = '5121fd9da17339d86bf624f9fabefebe';
 $url = "https://api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
 
-$data = [
+$data = array(
 	'From' => '+16505427238',
 	'To' => '+15086884042',
 	'Body' => 'Testing!'
-];
+);
 
 $request = $client
-	->post($url, ['Date' => date('r')], $data)
+	->post($url, array('Date' => date('r')), $data)
 	->setAuth($accountId, $accountKey);
 $response = $request->send();
 
