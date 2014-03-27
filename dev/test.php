@@ -29,29 +29,45 @@ $u = array(
 $d = "D Er A,D,E,F";
 
 //report($client, "Testing from Heroku on March 20, minor change here!");
-$client = new GuzzleHttp\Client(['base_url' => 'https://AC4c45ba306f764d2327fe824ec0e46347:5121fd9da17339d86bf624f9fabefebe@api.twilio.com/2010-04-01/Accounts/AC4c45ba306f764d2327fe824ec0e46347/Messages']);
-$requests = [
-    $client->createRequest('POST', [
-	'headers' => [
-		'From' => '+16505427238',
-		'To' => '+15086884042',
-		'Body' => 'Testing!'
-	]
-    ]),
-    $client->createRequest('POST', [
-        'headers' => [
-                'From' => '+16505427238',
-                'To' => '+15083080173',
-                'Body' => 'Testing!'
-        ]
-    ]),
-    $client->createRequest('POST', [
-        'headers' => [
-                'From' => '+16505427238',
-                'To' => '+19788702867',
-                'Body' => 'Testing!'
-        ]
-    ])
+$client = new GuzzleHttp\Client();
+
+$accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
+$accountKey = '5121fd9da17339d86bf624f9fabefebe';
+$url = "https://api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
+
+$data = [
+	'From' => '+16505427238',
+	'To' => '+15086884042',
+	'Body' => 'Testing!'
 ];
 
-$client->sendAll($requests);
+$request = $client
+	->post($url, ['Date' => date('r')], $data)
+	->setAuth($accountId, $accountKey);
+$response = $request->send();
+
+// $requests = [
+//     $client->createRequest('POST', [
+// 	'headers' => [
+// 		'From' => '+16505427238',
+// 		'To' => '+15086884042',
+// 		'Body' => 'Testing!'
+// 	]
+//     ]),
+//     $client->createRequest('POST', [
+//         'headers' => [
+//                 'From' => '+16505427238',
+//                 'To' => '+15083080173',
+//                 'Body' => 'Testing!'
+//         ]
+//     ]),
+//     $client->createRequest('POST', [
+//         'headers' => [
+//                 'From' => '+16505427238',
+//                 'To' => '+19788702867',
+//                 'Body' => 'Testing!'
+//         ]
+//     ])
+// ];
+
+// $client->sendAll($requests);
