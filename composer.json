@@ -1,7 +1,9 @@
 {
+    
+    "minimum-stability": "RC",
     "require": {
         "twilio/sdk": "3.12.4",
         "j7mbo/twitter-api-php": "dev-master",
-		"guzzle/guzzle": "v3.8.1"
+	"guzzlehttp/guzzle": "4.*"
     }
 }
