@@ -7,6 +7,49 @@ require_once "../vendor/autoload.php";
 // require_once "../index.php";
 //$client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
+$accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
+$accountKey = '5121fd9da17339d86bf624f9fabefebe';
+$url = "https://api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
+$url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
+$client = new GuzzleHttp\Client();
+
+$data = [
+  'body' => [
+    'From' => '+16505427238',
+    'To' => '+15086884042',
+    'Body' => 'Testing!'
+  ]
+];
+
+//$request = $client->post($url, $data);
+//$request->send();
+
+$requests = [
+    $client->createRequest('POST', $url, [
+        'body' => [
+            'From' => '+16505427238',
+            'To' => '+15086884042',
+            'Body' => 'Testing!'
+        ]
+    ]),
+    $client->createRequest('POST', $url, [
+        'body' => [
+            'From' => '+16505427238',
+            'To' => '+15083080173',
+            'Body' => 'Testing!'
+        ]
+    ]),
+    $client->createRequest('POST', $url, [
+        'body' => [
+            'From' => '+16505427238',
+            'To' => '+19788702867',
+            'Body' => 'Testing!'
+        ]
+    ])
+];
+
+$client->sendAll($requests);
+
 $u = [
   'ID'=> '1',
   'Number'=> '1',
@@ -24,45 +67,3 @@ $u = [
   'F'=> 'Marketing # Desktop Publishing',
   'G'=> 'Calculus'
 ];
-
-$client = new GuzzleHttp\Client();
-$accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
-$accountKey = '5121fd9da17339d86bf624f9fabefebe';
-$url = "https://api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
-
-$data = [
-  'From' => '+16505427238',
-  'To' => '+15086884042',
-  'Body' => 'Testing!'
-];
-
-$request = $client
-  ->post($url, ['Date' => date('r')], $data)
-  ->setAuth($accountId, $accountKey);
-$response = $request->send();
-
-// $requests = [
-//     $client->createRequest('POST', [
-//  'headers' => [
-//    'From' => '+16505427238',
-//    'To' => '+15086884042',
-//    'Body' => 'Testing!'
-//  ]
-//     ]),
-//     $client->createRequest('POST', [
-//         'headers' => [
-//                 'From' => '+16505427238',
-//                 'To' => '+15083080173',
-//                 'Body' => 'Testing!'
-//         ]
-//     ]),
-//     $client->createRequest('POST', [
-//         'headers' => [
-//                 'From' => '+16505427238',
-//                 'To' => '+19788702867',
-//                 'Body' => 'Testing!'
-//         ]
-//     ])
-// ];
-
-// $client->sendAll($requests);
