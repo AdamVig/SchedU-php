@@ -9,7 +9,6 @@ require_once "../vendor/autoload.php";
 
 $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
 $accountKey = '5121fd9da17339d86bf624f9fabefebe';
-$url = "https://api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
 $url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
 $client = new GuzzleHttp\Client();
 
@@ -21,8 +20,7 @@ $data = [
   ]
 ];
 
-//$request = $client->post($url, $data);
-//$request->send();
+//$client->post($url, $data)->send();
 
 $requests = [
     $client->createRequest('POST', $url, [
@@ -48,7 +46,17 @@ $requests = [
     ])
 ];
 
-$client->sendAll($requests);
+$client->sendAll($requests, [
+    'error' => function (ErrorEvent $event) use (&$errors) {
+        $errors[] = $event;
+    }
+]);
+
+$message = "SchedU Errors Today:<br>";
+foreach ($errors as $error) {
+    $message .= $error."<br>";
+}
+mail("adam@getschedu.com", "SchedU Errors Today", $message);
 
 $u = [
   'ID'=> '1',
