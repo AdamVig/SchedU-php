@@ -233,10 +233,22 @@ function runScript()
             require_once("../lib/twilio-php/Services/Twilio.php");
             $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
+            //Get Guzzle going
+            require_once "vendor/autoload.php";
+            $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
+            $accountKey = '5121fd9da17339d86bf624f9fabefebe';
+            $url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
+            $guzzle = new GuzzleHttp\Client();
+            $requests = [];
+
             //OPEN AND QUERY DATABASE
-            $url=parse_url(getenv("CLEARDB_DATABASE_URL"));
-            $database = new mysqli($url["host"], $url["user"], $url["pass"], substr($url["path"], 1));
-            $query = "SELECT * FROM users ORDER BY 'ID' ASC";
+            $db = [
+                'host' => 'localhost',
+                'username' => 'schedu',
+                'password' => 'schedu'
+            ]
+            $database = new mysqli($db['host'], $db['username'], $db['password']);
+            $query = "SELECT * FROM users";
             $result = $database->query($query);
             //------------------------------------------------------
 
@@ -297,7 +309,14 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        send($client, $body, $phone, $fromNumber);
+                        //send($client, $body, $phone, $fromNumber);
+                        $request = $guzzle->createRequest('POST', $url, [
+                        'body' => [
+                            'From' => '+1'.$fromNumber,
+                            'To' => '+1'.$phone,
+                            'Body' => $body
+                        ]);
+                        array_push($requests, $request);
                         $messagesSent++;
                         //------------------------------------------------------
 
@@ -347,6 +366,26 @@ function runScript()
             }//End while rows in database
             //------------------------------------------------------
 
+
+            //------------------------------------------------------
+            //SEND MESSAGES
+            $guzzle->sendAll($requests, [
+                'error' => function (ErrorEvent $event) use (&$errors) {
+                    $errors[] = $event;
+                }
+            ]);
+            //------------------------------------------------------
+
+
+            //------------------------------------------------------
+            //REPORT ERRORS
+            $message = "SchedU Errors Today:<br>";
+            foreach ($errors as $error) {
+                $message .= $error."<br>";
+            }
+            mail("adam@getschedu.com", "SchedU Errors Today", $message);
+            //------------------------------------------------------
+            
             fclose($log);
 
             //------------------------------------------------------
