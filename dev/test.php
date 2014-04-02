@@ -12,7 +12,8 @@ $db = [
     'username' => 'schedu',
     'password' => 'schedu'
 ];
-$database = new mysqli($db['host'], $db['username'], $db['password']);
+$database = new mysqli($db['host'], $db['username'], $db['password'], 'users');
+
 $query = "SELECT * FROM users";
 $result = $database->query($query);
 //------------------------------------------------------
