@@ -231,8 +231,11 @@ function runScript()
             $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
             $accountKey = '5121fd9da17339d86bf624f9fabefebe';
             $url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
-            $client = new GuzzleHttp\Client();
+            $guzzle = new GuzzleHttp\Client();
             $requests = [];
+
+            //Get Twilio going
+            $twilio;
 
             //OPEN AND QUERY DATABASE
             $db = [
@@ -261,7 +264,7 @@ function runScript()
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
-                        report($client, "makeSchedule for $school returned null value, uh oh!");
+                        report($twilio, "makeSchedule for $school returned null value, uh oh!");
                         break; //Get out of while loop, finish up other stuff
                     }
 
@@ -303,8 +306,7 @@ function runScript()
 
                         //------------------------------------------------------
                         //SEND MESSAGE
-                        //send($client, $body, $phone, $fromNumber);
-                        $request = $client->createRequest('POST', $url, [
+                        $request = $guzzle->createRequest('POST', $url, [
                             'body' => [
                                 'From' => '+1'.$fromNumber,
                                 'To' => '+1'.$phone,
@@ -334,7 +336,7 @@ function runScript()
                         //------------------------------------------------------
 
                         if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
-                            report($client, $body);
+                            report($twilio, $body);
                         } else if ($userData['PhoneNumber'] == $myPhone && $sendToMe == false) {
                             $body = str_replace("\r\n", "<br>", $body);
                             echo $body . "<br>";
@@ -364,7 +366,7 @@ function runScript()
 
             //------------------------------------------------------
             //SEND MESSAGES
-            $client->sendAll($requests, [
+            $guzzle->sendAll($requests, [
                 'error' => function (ErrorEvent $event) use (&$errors) {
                     $errors[] = $event;
                 }
@@ -388,10 +390,10 @@ function runScript()
             $executionStop = new DateTime();
             $elapsedTime = date_diff($executionStop, $executionStart, true); //absolute value = true
             $report = "The SchedU script took " . $elapsedTime->format('%H:%I:%S') . " to execute ".
-                      "and sent " . getMessagesSent($client) . " messages to " . $messagesSent . " users.";
+                      "and sent " . getMessagesSent($twilio) . " messages to " . $messagesSent . " users.";
 
             if ($debug == false) {
-                report($client, $report);
+                report($twilio, $report);
             }
             //------------------------------------------------------
 
@@ -435,8 +437,8 @@ function openCalendar()
 function sendToMe($body)
 {
     require_once("twilio-php/Services/Twilio.php");
-    $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
-    report($client, $body);
+    $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+    report($twilio, $body);
 }
 
 

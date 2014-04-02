@@ -3,24 +3,24 @@
 function getUserDataPhone($phone)
 {
 
-    $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
+    $database = new mysqli("localhost", "schedu", "schedu", "users");
     $query = "SELECT * FROM users WHERE PhoneNumber=$phone";
     $result = $database->query($query);
     return $result->fetch_assoc();
 }
 
-function report($client, $body)
+function report($twilio, $body)
 {
-    $sms = $client->account->messages->sendMessage(
+    $sms = $twilio->account->messages->sendMessage(
         "+16505427238", //From
         "+15086884042", //To
         $body           //Body
     );
 }
 
-function send($client, $body, $to, $from)
+function send($twilio, $body, $to, $from)
 {
-    $sms = $client->account->messages->sendMessage(
+    $sms = $twilio->account->messages->sendMessage(
         "+1".$from, //From
         "+1".$to, //To
         $body       //Body
@@ -44,12 +44,9 @@ function sendMessageTo($who, $content)
 
     //------------------------------------------------------
     //GET TWILIO GOING
-    require_once("php/twilio-php/Services/Twilio.php");
-
     $AccountSid = "AC4c45ba306f764d2327fe824ec0e46347";
     $AuthToken = "5121fd9da17339d86bf624f9fabefebe";
-
-    $client = new Services_Twilio($AccountSid, $AuthToken);
+    $twilio = new Services_Twilio($AccountSid, $AuthToken);
     //------------------------------------------------------
 
     $nl = "\r\n";
@@ -89,14 +86,14 @@ function sendMessageTo($who, $content)
 
         if ($debug) {
             if ($phone == "5086884042" && $name == "Adam") {
-                $sms = $client->account->messages->sendMessage(
+                $sms = $twilio->account->messages->sendMessage(
                     "+1".$number, // from
                     "+1" . $phone, // to
                     $body         //body
                 );
             }
         } else { //Normal mode
-            $sms = $client->account->messages->sendMessage(
+            $sms = $twilio->account->messages->sendMessage(
                 "+1".$number, // from
                 "+1".$phone, // to
                 $body         //body
@@ -232,9 +229,9 @@ function getWorkingDays(DateTime $startDate, DateTime $endDate)
 }
 
 
-function getMessagesSent($client)
+function getMessagesSent($twilio)
 {
-    $smsRecord = $client->account->usage_records->today->getCategory('sms-outbound');
+    $smsRecord = $twilio->account->usage_records->today->getCategory('sms-outbound');
     $messagesSent = $smsRecord->usage;
     return $messagesSent;
 }
