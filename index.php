@@ -8,14 +8,11 @@ require_once "../helpers.php";
 
 function getDaySchedule($day, $calendar, $school)
 {
-
     //day : either 'today' or 'tomorrow'
     //calendar : calendar object
     //school : which school calendar to get event from
     //returns string of first event on calendar for today
-
     $myPhone = "5086884042";
-
     $output;
 
     switch ($school) {
@@ -229,25 +226,22 @@ function runScript()
                 fwrite($log, $nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl);
             }
 
-            //GET TWILIO GOING
-            require_once("../lib/twilio-php/Services/Twilio.php");
-            $client = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
-
             //Get Guzzle going
             require_once "vendor/autoload.php";
             $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
             $accountKey = '5121fd9da17339d86bf624f9fabefebe';
             $url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
-            $guzzle = new GuzzleHttp\Client();
+            $client = new GuzzleHttp\Client();
             $requests = [];
 
             //OPEN AND QUERY DATABASE
             $db = [
                 'host' => 'localhost',
                 'username' => 'schedu',
-                'password' => 'schedu'
-            ]
-            $database = new mysqli($db['host'], $db['username'], $db['password']);
+                'password' => 'schedu',
+                'database' => 'users'
+            ];
+            $database = new mysqli($db['host'], $db['username'], $db['password'], $db['database']);
             $query = "SELECT * FROM users";
             $result = $database->query($query);
             //------------------------------------------------------
@@ -310,11 +304,12 @@ function runScript()
                         //------------------------------------------------------
                         //SEND MESSAGE
                         //send($client, $body, $phone, $fromNumber);
-                        $request = $guzzle->createRequest('POST', $url, [
-                        'body' => [
-                            'From' => '+1'.$fromNumber,
-                            'To' => '+1'.$phone,
-                            'Body' => $body
+                        $request = $client->createRequest('POST', $url, [
+                            'body' => [
+                                'From' => '+1'.$fromNumber,
+                                'To' => '+1'.$phone,
+                                'Body' => $body
+                            ]
                         ]);
                         array_push($requests, $request);
                         $messagesSent++;
@@ -369,7 +364,7 @@ function runScript()
 
             //------------------------------------------------------
             //SEND MESSAGES
-            $guzzle->sendAll($requests, [
+            $client->sendAll($requests, [
                 'error' => function (ErrorEvent $event) use (&$errors) {
                     $errors[] = $event;
                 }
