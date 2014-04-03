@@ -52,7 +52,7 @@ function makeSchedule($userData, $daySchedule, $school)
 
     $output = "";
 
-    require_once "make-schedule.php";
+    require_once "../make-schedule.php";
 
     //Abbreviate variables
     $u = $userData;
