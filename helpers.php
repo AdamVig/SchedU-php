@@ -30,8 +30,9 @@ function send($twilio, $body, $to, $from)
 function getSchedule($school)
 {
     $database = new mysqli("localhost", "schedu", "schedu", "info");
-    $query = "SELECT * FROM calendar WHERE Date='".DateTime->format('Y-m-d')."'";
-    $daySchedule = $result->fetch_assoc()[0];
+    $query = "SELECT * FROM calendar WHERE Date='".date('Y-m-d')."'";
+    $result = $database->query($query);
+    $daySchedule = $result->fetch_assoc();
     return $daySchedule;
 }
 
