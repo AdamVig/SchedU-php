@@ -27,6 +27,161 @@ function send($twilio, $body, $to, $from)
     );
 }
 
+function getSchedule($school)
+{
+    $database = new mysqli("localhost", "schedu", "schedu", "info");
+    $query = "SELECT * FROM calendar WHERE Date='".DateTime->format('Y-m-d')."'";
+    $daySchedule = $result->fetch_assoc()[0];
+    return $daySchedule;
+}
+
+
+//SEND SMS
+function sendToMe($body)
+{
+    require_once("twilio-php/Services/Twilio.php");
+    $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+    report($twilio, $body);
+}
+
+function makeSchedule($userData, $daySchedule, $school)
+{
+    //userData : array, contains grade, classes, etc.
+    //daySchedule : string, raw title of calendar event of the day
+    //returns : string, class list ready to be added to message body
+
+    $output = "";
+
+    require_once "make-schedule.php";
+
+    //Abbreviate variables
+    $u = $userData;
+    $d = $daySchedule;
+
+    switch ($school) {
+        case 'nashoba':
+            $output = makeNashoba($u, $d);
+            break;
+        case 'bromfield':
+            $output = makeBromfield($u, $d);
+            break;
+        case 'hudson':
+            $output = makeHudson($u, $d);
+            break;
+        case 'tahanto':
+            $output = makeTahanto($u, $d);
+            break;
+        default: //Fall back to Nashoba if unknown
+            $output = makeNashoba($u, $d);
+    }
+
+    return $output;
+}
+
+
+/**
+ * Retrieves table of custom messages from database
+ * @return 2d assoc array or boolean containing all messages or false if no messages
+ */
+function getCustomMessages()
+{
+
+    $database = new mysqli("localhost", "schedu", "schedu", "users");
+    $query = "SELECT * FROM messages";
+    $result = $database->query($query);
+    $messages = array();
+
+    while ($message = $result->fetch_assoc()) {
+        array_push($messages, $message);
+
+        //Decrement days
+        $newDays = intval($message['Days']) - 1;
+        if ($newDays == 0) {
+            $query = "DELETE FROM messages WHERE ID=".$message['ID'];
+        } else { //Still some days left
+            $query = "UPDATE messages SET Days=$newDays WHERE ID=".$message['ID'];
+        }
+
+        $database->query($query);
+    }
+
+    if (empty($messages)) {
+        $output = false;
+    } else {
+        $output = $messages;
+    }
+
+    return $output;
+
+}
+
+/**
+ * returns the appropriate message for the given parameters
+ * @param  string         $uMembership user membership
+ * @param  string         $uSchool     user school
+ * @param  2d assoc array $messages    from getCustomMessages()
+ * @return string                      appropriate message or empty string if no messages
+*/
+function decideCustomMessage($uMembership, $uSchool, $messages)
+{
+
+    $output = "";
+
+    if ($messages) {
+
+        foreach ($messages as $message) {
+            $messageText = $message['Message'];
+            $mMembership = $message['Members'];
+            $mSchool = $message['Schools'];
+
+            if (($mMembership == $uMembership && $mSchool == $uSchool) || //Both match
+                ($mMembership == $uMembership && $mSchool == 'all')    || //Membership match
+                ($mMembership == 'all' && $mSchool == $uSchool)        || //School match
+                ($mMembership == 'all' && $mSchool == 'all')               //Both all
+               ) {
+
+                $output = $messageText;
+            }
+        }
+
+        if (!empty($output)) {
+            $output = "\r\n$output\r\n"; //Append newlines
+        }
+    }
+
+    return $output;
+
+}
+
+
+//TWEET
+function tweet($tweetBody)
+{
+
+    require_once('TwitterAPIExchange.php');
+
+    $settings = array(
+        'oauth_access_token' => "1897135681-pdfl20Jt3KiucKg03nPqUWxLkydt5US5hFsTGbw",
+        'oauth_access_token_secret' => "xiN3RORM4lGgo6nzeejiHUGVSw3ZvLREtgaeyI5TaL9h2",
+        'consumer_key' => "Ui9e8o6WKLtNNGxs3qqaOA",
+        'consumer_secret' => "rfs1DsS54ScUC42clfVDthcFROCJc7tYbYSmlQ9k9c"
+    );
+
+    $url = 'https://api.twitter.com/1.1/statuses/update.json';
+    $requestMethod = 'POST';
+
+    $postfields = array(
+        'status' => $tweetBody
+    );
+
+    $twitter = new TwitterAPIExchange($settings);
+    $twitter->buildOauth($url, $requestMethod)
+            ->setPostfields($postfields)
+            ->performRequest();
+
+}
+
+
 function sendMessageTo($who, $content)
 {
     //who : array(members, school)
@@ -53,7 +208,7 @@ function sendMessageTo($who, $content)
 
     //------------------------------------------------------
     //QUERY DATABASE
-    $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
+    $database = new mysqli("localhost", "schedu", "schedu", "users");
 
     $query = "SELECT * FROM users";
 
@@ -86,11 +241,7 @@ function sendMessageTo($who, $content)
 
         if ($debug) {
             if ($phone == "5086884042" && $name == "Adam") {
-                $sms = $twilio->account->messages->sendMessage(
-                    "+1".$number, // from
-                    "+1" . $phone, // to
-                    $body         //body
-                );
+                report($twilio, $body);
             }
         } else { //Normal mode
             $sms = $twilio->account->messages->sendMessage(
@@ -135,7 +286,7 @@ function constructBody($content, $name)
 function getMessages()
 {
 
-    $database = new mysqli("schedu.db", "adamvig", "122395IatW", "info");
+    $database = new mysqli("localhost", "schedu", "schedu", "info");
     $query = "SELECT * FROM messages";
     $result = $database->query($query);
     if (!$result) {
@@ -152,7 +303,7 @@ function getMessages()
 function getSchools()
 {
 
-    $database = new mysqli("schedu.db", "adamvig", "122395IatW", "info");
+    $database = new mysqli("localhost", "schedu", "schedu", "info");
     $query = "SELECT * FROM schools";
     $result = $database->query($query);
     if (!$result) {
