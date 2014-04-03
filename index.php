@@ -25,7 +25,7 @@ function runScript()
         }
         //------------------------------------------------------
 
-        if ($daySchedules["nashoba"] != "No School" /*||
+        if ($daySchedules['nashoba']['Special'] != "No School" /*||
             $daySchedules["bromfield"] != "No School" ||
             $daySchedules["hudson"] != "No School" ||
             $daySchedules["tahanto"] != "No School"*/) { //If any school has school today
@@ -35,10 +35,7 @@ function runScript()
             $executionStart = new DateTime();
             $messagesSent = 0;
             $myPhone = "5086884042";
-            $log = fopen("../logs/log.txt", "a");
-            if (!$debug) {
-                fwrite($log, $nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl);
-            }
+            $logText = "$nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl";
 
             //Get Guzzle going
             require_once "vendor/autoload.php";
@@ -133,20 +130,18 @@ function runScript()
 
                         //------------------------------------------------------
                         //WRITE TO LOG
-                        $loginfo  = str_repeat('-', 40) . $nl;
-                        $loginfo .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
-                        $loginfo .= $body . $nl;
-                        fwrite($log, $loginfo);
+                        $logText .= str_repeat('-', 40) . $nl;
+                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
+                        $logText .= $body . $nl;
                         //------------------------------------------------------
 
                     } else { //if debug mode, log all and send to me
 
                         //------------------------------------------------------
                         //WRITE TO LOG
-                        $loginfo  = str_repeat('-', 40) . $nl;
-                        $loginfo .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
-                        $loginfo .= $body . $nl;
-                        fwrite($log, $loginfo);
+                        $logText .= str_repeat('-', 40) . $nl;
+                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
+                        $logText .= $body . $nl;
                         //------------------------------------------------------
 
                         if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
@@ -197,7 +192,15 @@ function runScript()
             mail("adam@getschedu.com", "SchedU Errors Today", $message);
             //------------------------------------------------------
             
-            fclose($log);
+
+            //------------------------------------------------------
+            //LOG
+            if (!$debug) {
+            $log = fopen("../logs/log.txt", "a");
+                fwrite($log, $logText);
+                fclose($log);
+            }
+            //------------------------------------------------------
 
             //------------------------------------------------------
             //REPORT INFORMATION
