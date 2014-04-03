@@ -22,6 +22,7 @@ function runScript()
         $daySchedules = array();
         foreach ($schools as $schoolName) {
             $daySchedules[$schoolName] = getSchedule($schoolName);
+            $daySchedules[$schoolName] = $daySchedules[$schoolName]['Schedule']." ".$daySchedules[$schoolName]['Special']." ".$daySchedules[$schoolName]['Classes'];
         }
         //------------------------------------------------------
 
@@ -201,6 +202,7 @@ function runScript()
                 fclose($log);
             }
             //------------------------------------------------------
+
 
             //------------------------------------------------------
             //REPORT INFORMATION
