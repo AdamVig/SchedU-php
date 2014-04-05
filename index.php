@@ -1,6 +1,6 @@
 <?php
 
-require "../helpers.php";
+require "/helpers.php";
 
 function runScript()
 {
@@ -197,7 +197,7 @@ function runScript()
             //------------------------------------------------------
             //LOG
             if (!$debug) {
-            $log = fopen("../logs/log.txt", "a");
+                $log = fopen("../logs/log.txt", "a");
                 fwrite($log, $logText);
                 fclose($log);
             }
