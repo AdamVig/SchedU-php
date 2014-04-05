@@ -662,3 +662,30 @@ label {
 		margin: 0;
 	}
 }
+
+/* AdamVig Edits */
+#lang {
+	visibility: hidden;
+}
+
+@media (max-width: 1000px) {
+	#menu {
+		visibility: hidden;
+	}
+	#breadcrumb {
+		left: 10px;
+		padding-top: 15px;
+	}
+	h2 {
+		font-size: 26px;
+	}
+	#content {
+		margin-left: 50px;
+	}
+	.logout {
+		top: 10px;
+		right: 10px;
+	}
+}
+
+/* End AdamVig Edits */
