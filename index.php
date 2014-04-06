@@ -219,3 +219,94 @@ function runScript()
         } //end if no school
     } //end if weekend
 } //end runScript
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Execute &middot; SchedU</title>
+        <meta name="description" content="Execute the SchedU script.">
+        <meta name="author" content="SchedU">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="http://getschedu.com/res/ico/favicon.png">
+        <style>
+            .align-center {
+                bottom: 0;
+                height: 300px;
+                left: 0;
+                margin: auto;
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 300px;
+                text-align: center;
+            }
+            button {
+                color: white;
+                background-color: red;
+                padding: 10px;
+                font-size: 18px;
+                border: 1px solid transparent;
+                cursor: pointer;
+            }
+            button:focus {
+                outline: 0;
+            }
+            .success, .loading, .green {
+                /*display: none;*/
+            }
+            .green {
+                background-color: green;
+            }
+            @keyframes loading {
+                from { max-width: 0; }
+            }
+
+            .loading:before {
+                content: attr(data-content);
+                position: absolute;
+                overflow: hidden;
+                max-width: 4em;
+                color: white;
+                animation: loading 10s linear;
+            }
+            h1 {
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 3em;
+            }
+            .success h1 {
+                color: white;
+                background-color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="align-center">
+            <img src="http://getschedu.com/res/img/logo.png" alt="">
+            <br>
+            <button class="red">Execute the Script</button>
+            <br>
+            <button class="green">Are you sure?</button>
+            <br>
+            <h1 class="loading" data-content="Loading">Loading</h1>
+            <div class="success">
+                <h1>Success</h1>
+                <p></p>
+            </div>
+        </div>
+        <script src="http://getschedu.com/res/js/jquery-1.9.0.min.js"></script>
+        <script>
+            $('.red').click(function () {
+                $('.red').css('background-color', 'lightcoral');
+                $('.green').show();
+            });
+            $('.green').click(function () {
+                $('.loading').show();
+                $.get("test.php", function(data) {
+                    $('.loading').hide();
+                    $('.success>p').html(data);
+                    $('.success').show();
+                });
+            });
+        </script>
+    </body>
+</html>
