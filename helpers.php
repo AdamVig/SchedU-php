@@ -1,8 +1,9 @@
 <?php
 
+require "/vendor/autoload.php";
+
 function getUserDataPhone($phone)
 {
-
     $database = new mysqli("localhost", "schedu", "schedu", "users");
     $query = "SELECT * FROM users WHERE PhoneNumber=$phone";
     $result = $database->query($query);
@@ -40,7 +41,6 @@ function getSchedule($school)
 //SEND SMS
 function sendToMe($body)
 {
-    require_once("twilio-php/Services/Twilio.php");
     $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
     report($twilio, $body);
 }
@@ -158,8 +158,6 @@ function decideCustomMessage($uMembership, $uSchool, $messages)
 //TWEET
 function tweet($tweetBody)
 {
-
-    require_once('TwitterAPIExchange.php');
 
     $settings = array(
         'oauth_access_token' => "1897135681-pdfl20Jt3KiucKg03nPqUWxLkydt5US5hFsTGbw",
