@@ -252,22 +252,10 @@ function runScript()
                 outline: 0;
             }
             .success, .loading, .green {
-                /*display: none;*/
+                display: none;
             }
             .green {
                 background-color: green;
-            }
-            @keyframes loading {
-                from { max-width: 0; }
-            }
-
-            .loading:before {
-                content: attr(data-content);
-                position: absolute;
-                overflow: hidden;
-                max-width: 4em;
-                color: white;
-                animation: loading 10s linear;
             }
             h1 {
                 font-family: Helvetica, Arial, sans-serif;
@@ -276,6 +264,24 @@ function runScript()
             .success h1 {
                 color: white;
                 background-color: green;
+            }
+            @-webkit-keyframes load {
+                from { max-width: 0; }
+                to { max-width: 4em; }
+            }
+            .loading {
+                position: absolute;
+                left: 50%;
+                margin-left: -1.9em;
+                color: #ccc;
+            }
+            .loading:before {
+                position: absolute;
+                color: darkgreen;
+                content: attr(data-content);
+                -webkit-animation: load 3s linear infinite alternate;
+                overflow: hidden;
+                max-width: 4em;
             }
         </style>
     </head>
@@ -288,6 +294,7 @@ function runScript()
             <button class="green">Are you sure?</button>
             <br>
             <h1 class="loading" data-content="Loading">Loading</h1>
+            <br>
             <div class="success">
                 <h1>Success</h1>
                 <p></p>
