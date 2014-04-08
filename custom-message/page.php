@@ -46,6 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         insert($newMessage);
     }
 
+    if ($_GET['send'] == 'true') {
+        sendMessageTo($_POST['who'], $_POST['content']);
+    }
+
     $messages = getMessages(); //Get updated messages from database
 }
 
@@ -181,7 +185,7 @@ if ($_SESSION['authenticated'] != true) {
             <section id="snowday">
                 <div class="container">
                     <h2>Full Message</h2>
-                    <form method="POST" action="send.php" id="send">
+                    <form method="POST" action="page.php?send=true" id="send">
                         <div class="row">
                             <div class="col-lg-4 form-group">
                             </div>
