@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 function runScript($variables)
 {
     
-    $debug = $variables['debug'] === 'true' ? true : false; //Set to true boolean values
-    $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to true boolean values
+    $debug = $variables['debug'] === 'true' ? true : false; //Set to actual boolean values
+    $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to actual boolean values
 
     echo $debug;
 
