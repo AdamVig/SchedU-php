@@ -70,7 +70,7 @@
                 <br>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" name="debug"> Debug
+                        <input type="checkbox" name="debug" checked="true"> Debug
                     </label>
                 </div>
                 <div class="checkbox">
@@ -88,15 +88,15 @@
         </div>
         <script src="http://getschedu.com/res/js/jquery-1.9.0.min.js"></script>
         <script>
-            $('.red').click(function () {
+            $('button.red').click(function () {
                 $('.red').css('background-color', 'lightcoral');
                 $('.confirm').show();
             });
-            $('.green').click(function () {
+            $('button.green').click(function () {
                 $('.loading').show();
                 $.ajax({
                     type: 'POST',
-                    url: 'http://requestb.in/ypuwcbyp',
+                    url: 'functions/test.php',
                     data: { 
                         'variables[debug]': $("input[name='debug']").prop('checked'), 
                         'variables[sendToMe]': $("input[name='sendToMe']").prop('checked')
