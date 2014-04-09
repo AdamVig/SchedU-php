@@ -27,9 +27,13 @@
                 cursor: pointer;
             }
             button:focus { outline: 0; }
-            .success, .loading, .green { display: none; }
+            .success, .loading, .confirm { display: none; }
             .red { background-color: red; }
             .green { background-color: green; }
+            .confirm .checkbox {
+                text-align:left;
+                padding-left: 80px;
+            }
             h1 { font-size: 3em; }
             .success h1 {
                 color: white;
@@ -59,19 +63,22 @@
         <div class="align-center">
             <img src="http://getschedu.com/res/img/logo.png" alt="">
             <br>
-            <button class="execute">Execute the Script</button>
+            <button class="red">Execute the Script</button>
             <br>
             <div class="confirm">
-            <button class="green">Are you sure?</button>
-            <label>
-                Debug
-                <input type="checkbox" name="debug">
-            </label>
-            <label>
-                Send To Me
-                <input type="checkbox" name="sendToMe">
-            </label>
-            <br>
+                <button class="green">Are you sure?</button>
+                <br>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="debug"> Debug
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="sendToMe"> Send To Me
+                    </label>
+                </div>
+            <div>
             <h1 class="loading" data-content="Loading">Loading</h1>
             <br>
             <div class="success">
@@ -83,18 +90,18 @@
         <script>
             $('.red').click(function () {
                 $('.red').css('background-color', 'lightcoral');
-                $('.green').show();
+                $('.confirm').show();
             });
             $('.green').click(function () {
                 $('.loading').show();
                 $.ajax({
                     type: 'POST',
-                    url: 'http://requestb.in/19lbxi31',
+                    url: 'http://requestb.in/ypuwcbyp',
                     data: { 
-                        'variables[debug]': $(input[name='debug']).prop('checked'), 
-                        'variables[sendToMe]': $(input[name='sendToMe']).prop('checked')
+                        'variables[debug]': $("input[name='debug']").prop('checked'), 
+                        'variables[sendToMe]': $("input[name='sendToMe']").prop('checked')
                     },
-                    success: function(msg){
+                    success: function(data){
                         $('.loading').hide();
                         $('.success>p').html(data);
                         $('.success').show();
