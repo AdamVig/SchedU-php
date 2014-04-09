@@ -1,6 +1,6 @@
 <?php
-
-require "/vendor/autoload.php";
+require_once("./globals.php");
+require PATH."/vendor/autoload.php";
 
 function getUserDataPhone($phone)
 {
@@ -54,7 +54,7 @@ function makeSchedule($userData, $daySchedule, $school)
 
     $output = "";
 
-    require_once "../make-schedule.php";
+    require_once(PATH."/functions/make-schedule.php");
 
     //Abbreviate variables
     $u = $userData;
@@ -229,7 +229,7 @@ function sendMessageTo($who, $content)
     }
     //------------------------------------------------------
 
-    require_once("../numbers.php");
+    require_once(PATH."/functions/numbers.php");
 
     //LOOP THROUGH DATABASE
     while ($userData = $result->fetch_assoc()) {
