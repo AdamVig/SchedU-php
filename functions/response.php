@@ -1,6 +1,6 @@
 <?php
 
-require "../index.php";
+require "/functions/run.php";
 
 set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
 
@@ -11,7 +11,7 @@ set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
 function getUserByPhone($phone)
 {
 
-    $database = new mysqli("schedu.db", "adamvig", "122395IatW", "users");
+    $database = new mysqli("localhost", "schedu", "schedu", "users");
 
     if ($database->connect_errno) {
         echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -219,7 +219,6 @@ function generateResponse()
 
             //------------------------------------------
             //USE TWILIO LIBRARY TO GENERATE TwiML
-            require_once("twilio-php/Services/Twilio.php");
             $response = new Services_Twilio_Twiml();
             $response->message($body);
             //------------------------------------------

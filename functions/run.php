@@ -1,5 +1,5 @@
 <?php
-require "/helpers.php";
+require "/functions/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     runScript($_POST['variables']);
@@ -43,7 +43,6 @@ function runScript($variables)
             $logText = "$nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl";
 
             //Get Guzzle going
-            require_once "vendor/autoload.php";
             $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
             $accountKey = '5121fd9da17339d86bf624f9fabefebe';
             $url = "https://$accountId:$accountKey@api.twilio.com/2010-04-01/Accounts/$accountId/Messages";
@@ -77,6 +76,7 @@ function runScript($variables)
 
                 if ($daySchedules[$school] != "No School") {
 
+                    require_once('/functions/make-schedule.php');
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
@@ -111,7 +111,7 @@ function runScript($variables)
 
                     //------------------------------------------------------
                     //DECIDE WHICH PHONE NUMBER TO USE
-                    require_once("../numbers.php");
+                    require_once("/functions/numbers.php");
                     $fromNumber = $numbers[$userData['Number']];
                     //------------------------------------------------------
 
