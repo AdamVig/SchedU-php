@@ -1,15 +1,22 @@
 <?php
-require "/functions/helpers.php";
+require_once("./globals.php");
+require PATH."/functions/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    runScript($_POST['variables']);
+    runScript($_POST[]);
 }
 
 function runScript($variables)
 {
     
-    $debug = $variables['debug'];
-    $debug = $variables['sendToMe'];
+    $debug = $variables['debug'] === 'true' ? true : false; //Set to true boolean values
+    $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to true boolean values
+
+    echo $debug;
+
+    //REMOVE
+    $debug = true;
+
 
     $nl = "\r\n";
     $weekday = date("N"); //1 for monday, 7 for sunday
@@ -76,7 +83,7 @@ function runScript($variables)
 
                 if ($daySchedules[$school] != "No School") {
 
-                    require_once('/functions/make-schedule.php');
+                    require_once(PATH.'/functions/make-schedule.php');
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
@@ -111,7 +118,7 @@ function runScript($variables)
 
                     //------------------------------------------------------
                     //DECIDE WHICH PHONE NUMBER TO USE
-                    require_once("/functions/numbers.php");
+                    require_once(PATH."/functions/numbers.php");
                     $fromNumber = $numbers[$userData['Number']];
                     //------------------------------------------------------
 
