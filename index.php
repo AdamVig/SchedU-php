@@ -98,8 +98,8 @@
                     type: 'POST',
                     url: 'functions/test.php',
                     data: { 
-                        'variables[debug]': $("input[name='debug']").prop('checked'), 
-                        'variables[sendToMe]': $("input[name='sendToMe']").prop('checked')
+                        'debug': $("input[name='debug']").prop('checked'), 
+                        'sendToMe': $("input[name='sendToMe']").prop('checked')
                     },
                     success: function(data){
                         $('.loading').hide();
