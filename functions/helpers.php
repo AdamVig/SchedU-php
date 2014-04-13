@@ -1,5 +1,5 @@
 <?php
-require_once("./globals.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/globals.php");
 require PATH."/vendor/autoload.php";
 
 function getUserDataPhone($phone)

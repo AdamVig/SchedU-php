@@ -1,5 +1,5 @@
 <?php
-require_once("./globals.php");
+require_once($_SERVER['DOCUMENT_ROOT']."/globals.php");
 require PATH."/functions/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
