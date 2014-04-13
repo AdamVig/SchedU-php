@@ -4,6 +4,14 @@ require PATH."/functions/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     runScript($_POST[]);
+} else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if ($_GET['cron'] == 'true') {
+        $variables = [
+            'debug' => 'true',
+            'sendToMe' => 'true'
+        ];
+        runScript($variables);
+    }
 }
 
 function runScript($variables)
