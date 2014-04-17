@@ -3,6 +3,8 @@ define('DB_HOST', 'localhost');
 define('DB_USER', 'schedu');
 define('DB_PASS', 'schedu');
 
+require __DIR__."/helpers.php";
+
 $numbers = array(
     '1'  => "6505427238",
     '2'  => "3479675433",
