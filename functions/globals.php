@@ -1,2 +1,2 @@
 <?php
-define('PATH', $_SERVER['DOCUMENT_ROOT']);
+define('PATH', $SERVER['DOCUMENT_ROOT']);

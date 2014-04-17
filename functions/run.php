@@ -1,7 +1,6 @@
 <?php
-echo $_SERVER['DOCUMENT_ROOT'];
-require_once($_SERVER['DOCUMENT_ROOT']."/globals.php");
-require PATH."/functions/helpers.php";
+require_once(dirname(__FILE__)."/globals.php");
+require dirname(__FILE__)."/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     runScript($_POST[]);
