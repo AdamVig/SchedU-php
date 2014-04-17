@@ -1,11 +1,11 @@
 <?php
-require_once(dirname(__FILE__)."/globals.php");
-require dirname(__FILE__)."/helpers.php";
+require_once(__DIR__."/globals.php");
+require PATH."/functions/helpers.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     runScript($_POST[]);
 } else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if ($_GET['cron'] == 'true') {
+    if (isset($_GET['cron'])) {
         $variables = [
             'debug' => 'true',
             'sendToMe' => 'true'
