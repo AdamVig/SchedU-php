@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__."/globals.php");
-require PATH."/functions/helpers.php";
+require __DIR__."/helpers.php";
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     runScript($_POST[]);

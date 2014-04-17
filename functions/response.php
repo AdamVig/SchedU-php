@@ -1,8 +1,6 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT']."/globals.php");
-require PATH."/functions/run.php";
-
-set_include_path($_SERVER[DOCUMENT_ROOT]."/res/php");
+require_once(__DIR__."/globals.php");
+require __DIR__."/run.php";
 
 //=============================================================
 

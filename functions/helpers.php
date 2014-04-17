@@ -1,6 +1,6 @@
 <?php
-require_once(__DIR__."/functions/globals.php");
-require PATH."/vendor/autoload.php";
+require_once(__DIR__."/globals.php");
+require dirname(__DIR__)."/vendor/autoload.php"; //dirname goes one level up
 
 function getUserDataPhone($phone)
 {
