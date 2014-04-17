@@ -10,7 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'debug' => 'true',
             'sendToMe' => 'true'
         ];
-        runScript($variables);
+        $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+        report($twilio, "Hello!");
+        //runScript($variables);
     }
 }
 
