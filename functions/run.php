@@ -2,18 +2,16 @@
 require_once(__DIR__."/globals.php");
 require PATH."/functions/helpers.php";
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (isset($_SERVER['REQUEST_METHOD'])) {
     runScript($_POST[]);
-} else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (isset($_GET['cron'])) {
-        $variables = [
-            'debug' => 'true',
-            'sendToMe' => 'true'
-        ];
-        $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
-        report($twilio, "Hello!");
-        //runScript($variables);
-    }
+} else if (isset($_GET['cron'])) {
+    $variables = [
+        'debug' => 'true',
+        'sendToMe' => 'true'
+    ];
+    $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+    report($twilio, "Hello!");
+    //runScript($variables);
 }
 
 function runScript($variables)
