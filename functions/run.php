@@ -1,4 +1,5 @@
 <?php
+echo $_SERVER['DOCUMENT_ROOT'];
 require_once($_SERVER['DOCUMENT_ROOT']."/globals.php");
 require PATH."/functions/helpers.php";
 
