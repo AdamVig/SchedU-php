@@ -48,12 +48,10 @@ function sendToMe($body)
 function makeSchedule($userData, $daySchedule, $school)
 {
     //userData : array, contains grade, classes, etc.
-    //daySchedule : string, raw title of calendar event of the day
+    //daySchedule : array containing ID, Schedule, Classes, and Special
     //returns : string, class list ready to be added to message body
 
     $output = "";
-
-    require_once(PATH."/functions/make-schedule.php");
 
     //Abbreviate variables
     $u = $userData;
