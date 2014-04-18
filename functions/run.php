@@ -1,34 +1,38 @@
 <?php
 require_once(__DIR__."/globals.php");
 
-if (isset($_SERVER['REQUEST_METHOD'])) {
-    runScript($_POST[]);
-} else if (isset($_GET['cron'])) {
-    $variables = [
-        'debug' => 'true',
-        'sendToMe' => 'true'
+$twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
+
+if (php_sapi_name() === 'cli') { //Run from command line, as in cron job
+
+    $variables = [ //CLI arguments
+        'debug' => $argv[1],
+        'sendToMe' => $argv[2]
     ];
-    $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
-    report($twilio, "Hello!");
-    //runScript($variables);
+    runScript($variables);
+
+} else if ($_SERVER['REQUEST_METHOD'] == 'POST') { //POST
+
+    // runScript($_POST);
+
+} else if ($_SERVER['REQUEST_METHOD'] == 'GET') { //GET
+    
+    // runScript($_GET);
 }
 
 function runScript($variables)
 {
-    
-    $debug = $variables['debug'] === 'true' ? true : false; //Set to actual boolean values
-    $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to actual boolean values
-
-    echo $debug;
+    if (isset($variables)) {
+        $debug = $variables['debug'] === 'true' ? true : false; //Set to actual boolean values
+        $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to actual boolean values
+    }
 
     //REMOVE
     $debug = true;
 
-
     $nl = "\r\n";
-    $weekday = date("N"); //1 for monday, 7 for sunday
 
-    if (($weekday != 6 && $weekday != 7) || $debug == true) { //saturday or sunday
+    if ((date("N") != 6 && date("N") != 7) || $debug == true) { //saturday or sunday
 
         //------------------------------------------------------
         //GET DAY SCHEDULES
@@ -44,10 +48,7 @@ function runScript($variables)
         }
         //------------------------------------------------------
 
-        if ($daySchedules['nashoba']['Special'] != "No School" /*||
-            $daySchedules["bromfield"] != "No School" ||
-            $daySchedules["hudson"] != "No School" ||
-            $daySchedules["tahanto"] != "No School"*/) { //If any school has school today
+        if ($daySchedules['nashoba']['Special'] != "No School") { //If any school has school today
 
             //------------------------------------------------------
             //START LOG
@@ -67,14 +68,11 @@ function runScript($variables)
             $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
             //OPEN AND QUERY DATABASE
-            $db = [
-                'host' => 'localhost',
-                'username' => 'schedu',
-                'password' => 'schedu',
-                'database' => 'beta'
-            ];
-            $database = new mysqli($db['host'], $db['username'], $db['password'], $db['database']);
-            $query = "SELECT * FROM users";
+            $database = new mysqli('DB_HOST', 'DB_USER', 'DB_PASS', 'users');
+            if ($database->error) {
+                echo $database->error;
+            }
+            $query = "SELECT * FROM beta";
             $result = $database->query($query);
             //------------------------------------------------------
 
