@@ -4,6 +4,7 @@ define('DB_USER', 'schedu');
 define('DB_PASS', 'schedu');
 
 require __DIR__."/helpers.php";
+require __DIR__.'/make-schedule.php';
 
 $numbers = array(
     '1'  => "6505427238",
