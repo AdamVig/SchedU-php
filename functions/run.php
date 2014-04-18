@@ -68,14 +68,12 @@ function runScript($variables)
             $twilio = new Services_Twilio("AC4c45ba306f764d2327fe824ec0e46347", "5121fd9da17339d86bf624f9fabefebe");
 
             //OPEN AND QUERY DATABASE
-            $database = new mysqli('DB_HOST', 'DB_USER', 'DB_PASS', 'users');
-            if ($database->error) {
-                echo $database->error;
-            }
+            $database = new mysqli(DB_HOST, DB_USER, DB_PASS, 'users');
             $query = "SELECT * FROM beta";
             $result = $database->query($query);
+            echo $database->error;
             //------------------------------------------------------
-
+            
 
             //------------------------------------------------------
             //GO THROUGH DATABASE ARRAY
@@ -88,7 +86,6 @@ function runScript($variables)
 
                 if ($daySchedules[$school] != "No School") {
 
-                    require_once(PATH.'/functions/make-schedule.php');
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
@@ -120,13 +117,8 @@ function runScript($variables)
                     $body .= "<3 SchedU";
                     //------------------------------------------------------
 
-
-                    //------------------------------------------------------
-                    //DECIDE WHICH PHONE NUMBER TO USE
-                    require_once(PATH."/functions/numbers.php");
+                    //Decide which phone number to use
                     $fromNumber = $numbers[$userData['Number']];
-                    //------------------------------------------------------
-
 
                     //------------------------------------------------------
                     //SEND SMS
