@@ -6,7 +6,7 @@ define('DB_PASS', 'schedu');
 require __DIR__."/helpers.php";
 require __DIR__.'/make-schedule.php';
 
-$numbers = array(
+$numbers = [
     '1'  => "6505427238",
     '2'  => "3479675433",
     '3'  => "5128725433",
@@ -17,4 +17,4 @@ $numbers = array(
     '8'  => "4843203433",
     '9'  => "4435192433",
     '10' => "6466812433"
-);
+];
