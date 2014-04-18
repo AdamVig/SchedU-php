@@ -159,40 +159,39 @@ function makeNashoba($userData, $daySchedule)
     $output = "";
 
     //Parse day schedule into letter and number
-    $dayLetter = substr($daySchedule, 0, 1);
-    $dayNumber = substr($daySchedule, 1, 1);
-    $dayId = (strlen($daySchedule) > 2 ? substr($daySchedule, 3, 2) : false); //set day ID to string or false
+    $dayLetter = substr($daySchedule['Schedule'], 0, 1);
+    $dayNumber = substr($daySchedule['Schedule'], 1, 1);
+    $dayId = $daySchedule['Special'] ? $daySchedule['Special'] : false; //set day ID to string or false
 
     //DECIDE CLASS ORDER
     if ($dayId == false || $dayId == "Ac" || $dayId == "Mc") { //If normal or activity period day
 
         if ($dayId == "Mc" && $userData['Grade'] == 'sophomore') {
 
-            $description = "You have " . substr($daySchedule, 6) . " MCAS today.";
-            $classOrder = array($description);
+            $classOrder = ["You have " . $daySchedule['Classes'] . " MCAS today."];
 
         } else { //Normal day
             switch ($dayLetter) {
                 case "A":
-                    $classOrder = array($userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G']);
+                    $classOrder = [$userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G']];
                     break;
                 case "B":
-                    $classOrder = array($userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A']);
+                    $classOrder = [$userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A']];
                     break;
                 case "C":
-                    $classOrder = array($userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B']);
+                    $classOrder = [$userData['C'], $userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B']];
                     break;
                 case "D":
-                    $classOrder = array($userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C']);
+                    $classOrder = [$userData['D'], $userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C']];
                     break;
                 case "E":
-                    $classOrder = array($userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D']);
+                    $classOrder = [$userData['E'], $userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D']];
                     break;
                 case "F":
-                    $classOrder = array($userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E']);
+                    $classOrder = [$userData['F'], $userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E']];
                     break;
                 case "G":
-                    $classOrder = array($userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F']);
+                    $classOrder = [$userData['G'], $userData['A'], $userData['B'], $userData['C'], $userData['D'], $userData['E'], $userData['F']];
                     break;
             }//End switch
         } //End Else normal day
@@ -208,8 +207,8 @@ function makeNashoba($userData, $daySchedule)
             $dayId == "Md" || //Midterms: "A8 Md A (exam),B,C,G (lunch),E,F"
             $dayId == "Fn") { //Finals: (TBD)
 
-            $classOrder = array();
-            $periodOrder = explode(",", substr($daySchedule, 6)); //delimiter, string
+            $classOrder = [];
+            $periodOrder = explode(",", $daySchedule['Classes']); //delimiter, string
 
             //Go through letters in letter order array
             foreach ($periodOrder as $period) {
@@ -242,7 +241,7 @@ function makeNashoba($userData, $daySchedule)
 
         } else if ($dayId == "Sp") { //Special day: "H9 Sp Career Day"
 
-            $classOrder = array(substr($daySchedule, 6));
+            $classOrder = [$daySchedule['Special']];
 
         }
     }
