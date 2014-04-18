@@ -3,7 +3,7 @@ require dirname(__DIR__)."/vendor/autoload.php"; //dirname goes one level up
 
 function getUserDataPhone($phone)
 {
-    $database = new mysqli("localhost", "schedu", "schedu", "users");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "users");
     $query = "SELECT * FROM users WHERE PhoneNumber=$phone";
     $result = $database->query($query);
     return $result->fetch_assoc();
@@ -29,7 +29,7 @@ function send($twilio, $body, $to, $from)
 
 function getSchedule($school)
 {
-    $database = new mysqli("localhost", "schedu", "schedu", "info");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "info");
     $date = new DateTime;
     $query = "SELECT * FROM calendar WHERE Date='".date('Y-m-d')."'";
     $result = $database->query($query);
@@ -87,7 +87,7 @@ function makeSchedule($userData, $daySchedule, $school)
 function getCustomMessages()
 {
 
-    $database = new mysqli("localhost", "schedu", "schedu", "users");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "info");
     $query = "SELECT * FROM messages";
     $result = $database->query($query);
     $messages = array();
@@ -207,7 +207,7 @@ function sendMessageTo($who, $content)
 
     //------------------------------------------------------
     //QUERY DATABASE
-    $database = new mysqli("localhost", "schedu", "schedu", "users");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "users");
 
     $query = "SELECT * FROM users";
 
@@ -285,7 +285,7 @@ function constructBody($content, $name)
 function getMessages()
 {
 
-    $database = new mysqli("localhost", "schedu", "schedu", "info");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "info");
     $query = "SELECT * FROM messages";
     $result = $database->query($query);
     if (!$result) {
@@ -302,7 +302,7 @@ function getMessages()
 function getSchools()
 {
 
-    $database = new mysqli("localhost", "schedu", "schedu", "info");
+    $database = new mysqli(DB_HOST, DB_USER, DB_PASS, "info");
     $query = "SELECT * FROM schools";
     $result = $database->query($query);
     if (!$result) {
