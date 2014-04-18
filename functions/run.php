@@ -35,17 +35,9 @@ function runScript($variables)
     if ((date("N") != 6 && date("N") != 7) || $debug == true) { //saturday or sunday
 
         //------------------------------------------------------
-        //GET DAY SCHEDULES
-        $dayToGet = 'today';
-        $schools = array(
-            "nashoba"
-        );
+        //GET DAY SCHEDULES AND CUSTOM MESSAGES
         $messages = getCustomMessages();
-        $daySchedules = array();
-        foreach ($schools as $schoolName) {
-            $daySchedules[$schoolName] = getSchedule($schoolName);
-            $daySchedules[$schoolName] = $daySchedules[$schoolName]['Schedule']." ".$daySchedules[$schoolName]['Special']." ".$daySchedules[$schoolName]['Classes'];
-        }
+        $daySchedules['nashoba'] = getSchedule('nashoba');
         //------------------------------------------------------
 
         if ($daySchedules['nashoba']['Special'] != "No School") { //If any school has school today
@@ -89,7 +81,7 @@ function runScript($variables)
                     $schedule = makeSchedule($userData, $daySchedules[$school], $school);
 
                     if ($schedule == "") {
-                        report($twilio, "makeSchedule for $school returned null value, uh oh!");
+                        echo "makeSchedule for $school returned nothing, uh oh!";
                         break; //Get out of while loop, finish up other stuff
                     }
 
@@ -99,14 +91,14 @@ function runScript($variables)
 
                     if ($school == "nashoba" || $school == "hudson") {
                         $body .= "Today is a day ";
-                        $body .= substr($daySchedules[$school], 0, 2);
+                        $body .= $daySchedules['nashoba']['Schedule'];
                     } else {
                         $body .= "Today is ";
 
-                        //Decide which article to use
-                        $body .= (preg_match('/[aefAEF]/', $daySchedules[$school])) ? "an " : "a ";
+                        //Decide 'a' or 'an'
+                        $body .= (preg_match('/[aefAEF]/', $daySchedules['nashoba']['Schedule'])) ? "an " : "a ";
 
-                        $body .= substr($daySchedules[$school], 0, 1);
+                        $body .= substr($daySchedules['nashoba']['Schedule'], 0, 1);
                         $body .= " day";
                     }
 
@@ -118,6 +110,7 @@ function runScript($variables)
                     //------------------------------------------------------
 
                     //Decide which phone number to use
+                    global $numbers;
                     $fromNumber = $numbers[$userData['Number']];
 
                     //------------------------------------------------------
@@ -140,7 +133,7 @@ function runScript($variables)
                         //------------------------------------------------------
                         //WRITE TO LOG
                         $logText .= str_repeat('-', 40) . $nl;
-                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
+                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
                         $logText .= $body . $nl;
                         //------------------------------------------------------
 
@@ -149,7 +142,7 @@ function runScript($variables)
                         //------------------------------------------------------
                         //WRITE TO LOG
                         $logText .= str_repeat('-', 40) . $nl;
-                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $number . '.' . $nl;
+                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
                         $logText .= $body . $nl;
                         //------------------------------------------------------
 
@@ -165,6 +158,7 @@ function runScript($variables)
 
                     //------------------------------------------------------
                     //COMPOSE TWEET
+                    /*
                     $tweetBody = "";
                     foreach ($schools as $school) {
                         $tweetBody .= ucfirst($school);
@@ -175,7 +169,7 @@ function runScript($variables)
                     }
                     if ($debug == false) {
                         tweet($tweetBody);
-                    }
+                    }*/
                     //------------------------------------------------------
                 }//End if school
             }//End while rows in database
@@ -194,11 +188,13 @@ function runScript($variables)
 
             //------------------------------------------------------
             //REPORT ERRORS
-            $message = "SchedU Errors Today:<br>";
-            foreach ($errors as $error) {
-                $message .= $error."<br>";
+            if ($errors) {
+                $message = "SchedU Errors Today:<br>";
+                foreach ($errors as $error) {
+                    $message .= $error."<br>";
+                }
+                //mail("adam@getschedu.com", "SchedU Errors Today", $message);
             }
-            mail("adam@getschedu.com", "SchedU Errors Today", $message);
             //------------------------------------------------------
             
 
