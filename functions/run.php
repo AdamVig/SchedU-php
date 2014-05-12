@@ -13,11 +13,31 @@ if (php_sapi_name() === 'cli') { //Run from command line, as in cron job
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'POST') { //POST
 
-    // runScript($_POST);
+    $variables = [];
+
+    if ($_POST == true) {
+        $variables['debug'] = $_POST['debug'] === 'true' ? 'true' : 'false';
+        $variables['sendToMe'] = $_POST['sendToMe'] === 'true' ? 'true' : 'false';
+    } else {
+        $variables['debug'] = 'false';
+        $variables['sendToMe'] = 'false';
+    }
+
+    runScript($_POST);
 
 } else if ($_SERVER['REQUEST_METHOD'] == 'GET') { //GET
     
-    // runScript($_GET);
+    $variables = [];
+
+    if ($_GET == true) {
+        $variables['debug'] = $_GET['debug'] === 'true' ? 'true' : 'false';
+        $variables['sendToMe'] = $_GET['sendToMe'] === 'true' ? 'true' : 'false';
+    } else {
+        $variables['debug'] = 'false';
+        $variables['sendToMe'] = 'false';
+    }
+
+    runScript($variables);
 }
 
 function runScript($variables)
@@ -27,9 +47,6 @@ function runScript($variables)
         $sendToMe = $variables['sendToMe'] === 'true' ? true : false; //Set to actual boolean values
     }
 
-    //REMOVE
-    $debug = true;
-
     $nl = "\r\n";
 
     if ((date("N") != 6 && date("N") != 7) || $debug == true) { //saturday or sunday
@@ -37,11 +54,19 @@ function runScript($variables)
         //------------------------------------------------------
         //GET DAY SCHEDULES AND CUSTOM MESSAGES
         $messages = getCustomMessages();
-        $daySchedules['nashoba'] = getSchedule('nashoba');
+       
+        if ($debug == true) {
+            $daySchedule = [
+                'Schedule' => 'A1',
+                'Classes' => '',
+                'Special' => ''
+            ];
+        } else {
+            $daySchedule = getSchedule('nashoba');
+        }
         //------------------------------------------------------
 
-        if ($daySchedules['nashoba']['Special'] != "No School") { //If any school has school today
-
+        if ($daySchedule['Special'] != "No School") { //If any school has school today
             //------------------------------------------------------
             //START LOG
             $executionStart = new DateTime();
@@ -63,7 +88,6 @@ function runScript($variables)
             $database = new mysqli(DB_HOST, DB_USER, DB_PASS, 'users');
             $query = "SELECT * FROM beta";
             $result = $database->query($query);
-            echo $database->error;
             //------------------------------------------------------
             
 
@@ -76,102 +100,86 @@ function runScript($variables)
                 $membership = $userData['Membership'];
                 $school = $userData['School'];
 
-                if ($daySchedules[$school] != "No School") {
+                $schedule = makeNashoba($userData, $daySchedule);
 
-                    $schedule = makeSchedule($userData, $daySchedules[$school], $school);
+                if ($schedule == "") {
+                    break; //Get out of while loop, finish up other stuff
+                }
 
-                    if ($schedule == "") {
-                        echo "makeSchedule for $school returned nothing, uh oh!";
-                        break; //Get out of while loop, finish up other stuff
+                //------------------------------------------------------
+                //CREATE BODY
+                $body  = "Good morning " . $name . "," . $nl;
+                $body .= "Today is a day ";
+                $body .= $daySchedule['Schedule'];
+                $body .= "." . $nl . $nl;
+                $body .= $schedule;
+                $body .= decideCustomMessage($membership, $school, $messages);
+                $body .= $nl;
+                $body .= "<3 SchedU";
+                //------------------------------------------------------
+
+                //Decide which phone number to use
+                global $numbers;
+                $fromNumber = $numbers[$userData['Number']];
+
+                //------------------------------------------------------
+                //SEND SMS
+                if ($debug == false) { //if normal mode, send normally
+
+                    //------------------------------------------------------
+                    //SEND MESSAGE
+                    $request = $guzzle->createRequest('POST', $url, [
+                        'body' => [
+                            'From' => '+1'.$fromNumber,
+                            'To' => '+1'.$phone,
+                            'Body' => $body
+                        ]
+                    ]);
+                    array_push($requests, $request);
+                    $messagesSent++;
+                    //------------------------------------------------------
+
+                    //------------------------------------------------------
+                    //WRITE TO LOG
+                    $logText .= str_repeat('-', 40) . $nl;
+                    $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
+                    $logText .= $body . $nl;
+                    //------------------------------------------------------
+
+                } else { //if debug mode, log all and send to me
+
+                    //------------------------------------------------------
+                    //WRITE TO LOG
+                    $logText .= str_repeat('-', 40) . $nl;
+                    $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
+                    $logText .= $body . $nl;
+                    //------------------------------------------------------
+
+                    if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
+                        report($twilio, $body);
+                    } else if ($userData['PhoneNumber'] == $myPhone && $sendToMe == false) {
+                        $body = str_replace("\r\n", "<br>", $body);
+                        echo $body . "<br>";
                     }
+                }
+                //------------------------------------------------------
 
-                    //------------------------------------------------------
-                    //CREATE BODY
-                    $body  = "Good morning " . $name . "," . $nl;
 
-                    if ($school == "nashoba" || $school == "hudson") {
-                        $body .= "Today is a day ";
-                        $body .= $daySchedules['nashoba']['Schedule'];
-                    } else {
-                        $body .= "Today is ";
-
-                        //Decide 'a' or 'an'
-                        $body .= (preg_match('/[aefAEF]/', $daySchedules['nashoba']['Schedule'])) ? "an " : "a ";
-
-                        $body .= substr($daySchedules['nashoba']['Schedule'], 0, 1);
-                        $body .= " day";
+                //------------------------------------------------------
+                //COMPOSE TWEET
+                /*
+                $tweetBody = "";
+                foreach ($schools as $school) {
+                    $tweetBody .= ucfirst($school);
+                    $tweetBody .= ": " . $daySchedule[$Schedule];
+                    if ($school != end($schools)) {
+                        $tweetBody .= $nl; //Add newline if not last element
                     }
-
-                    $body .= "." . $nl . $nl;
-                    $body .= $schedule;
-                    $body .= decideCustomMessage($membership, $school, $messages);
-                    $body .= $nl;
-                    $body .= "<3 SchedU";
-                    //------------------------------------------------------
-
-                    //Decide which phone number to use
-                    global $numbers;
-                    $fromNumber = $numbers[$userData['Number']];
-
-                    //------------------------------------------------------
-                    //SEND SMS
-                    if ($debug == false) { //if normal mode, send normally
-
-                        //------------------------------------------------------
-                        //SEND MESSAGE
-                        $request = $guzzle->createRequest('POST', $url, [
-                            'body' => [
-                                'From' => '+1'.$fromNumber,
-                                'To' => '+1'.$phone,
-                                'Body' => $body
-                            ]
-                        ]);
-                        array_push($requests, $request);
-                        $messagesSent++;
-                        //------------------------------------------------------
-
-                        //------------------------------------------------------
-                        //WRITE TO LOG
-                        $logText .= str_repeat('-', 40) . $nl;
-                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
-                        $logText .= $body . $nl;
-                        //------------------------------------------------------
-
-                    } else { //if debug mode, log all and send to me
-
-                        //------------------------------------------------------
-                        //WRITE TO LOG
-                        $logText .= str_repeat('-', 40) . $nl;
-                        $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
-                        $logText .= $body . $nl;
-                        //------------------------------------------------------
-
-                        if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
-                            report($twilio, $body);
-                        } else if ($userData['PhoneNumber'] == $myPhone && $sendToMe == false) {
-                            $body = str_replace("\r\n", "<br>", $body);
-                            echo $body . "<br>";
-                        }
-                    }
-                    //------------------------------------------------------
-
-
-                    //------------------------------------------------------
-                    //COMPOSE TWEET
-                    /*
-                    $tweetBody = "";
-                    foreach ($schools as $school) {
-                        $tweetBody .= ucfirst($school);
-                        $tweetBody .= ": " . $daySchedules[$school];
-                        if ($school != end($schools)) {
-                            $tweetBody .= $nl; //Add newline if not last element
-                        }
-                    }
-                    if ($debug == false) {
-                        tweet($tweetBody);
-                    }*/
-                    //------------------------------------------------------
-                }//End if school
+                }
+                if ($debug == false) {
+                    tweet($tweetBody);
+                }*/
+                //------------------------------------------------------
             }//End while rows in database
             //------------------------------------------------------
 
