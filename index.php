@@ -96,7 +96,7 @@
                 $('.loading').show();
                 $.ajax({
                     type: 'POST',
-                    url: 'functions/test.php',
+                    url: 'functions/run.php',
                     data: { 
                         'debug': $("input[name='debug']").prop('checked'), 
                         'sendToMe': $("input[name='sendToMe']").prop('checked')
