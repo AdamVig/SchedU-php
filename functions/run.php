@@ -224,7 +224,7 @@ function runScript($variables)
                       "and sent " . getMessagesSent($twilio) . " messages to " . $messagesSent . " users.";
 
             if ($debug == false) {
-                report($twilio, $report);
+                //report($twilio, $report);
             }
             //------------------------------------------------------
 
