@@ -72,7 +72,7 @@ function runScript($variables)
             $executionStart = new DateTime();
             $messagesSent = 0;
             $myPhone = "5086884042";
-            $logText = "$nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl";
+            // $logText = "$nl . $nl . str_repeat('#', 40) . $nl . date('m-d-Y') . $nl";
 
             //Get Guzzle going
             $accountId = 'AC4c45ba306f764d2327fe824ec0e46347';
@@ -141,18 +141,18 @@ function runScript($variables)
 
                     //------------------------------------------------------
                     //WRITE TO LOG
-                    $logText .= str_repeat('-', 40) . $nl;
-                    $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
-                    $logText .= $body . $nl;
+                    // $logText .= str_repeat('-', 40) . $nl;
+                    // $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
+                    // $logText .= $body . $nl;
                     //------------------------------------------------------
 
                 } else { //if debug mode, log all and send to me
 
                     //------------------------------------------------------
                     //WRITE TO LOG
-                    $logText .= str_repeat('-', 40) . $nl;
-                    $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
-                    $logText .= $body . $nl;
+                    // $logText .= str_repeat('-', 40) . $nl;
+                    // $logText .= "Message " . $messagesSent . " sent to " . $name . " " . $userData['LastName'] . " using number " . $phone . '.' . $nl;
+                    // $logText .= $body . $nl;
                     //------------------------------------------------------
 
                     if ($userData['PhoneNumber'] == $myPhone && $sendToMe == true) {
@@ -209,9 +209,9 @@ function runScript($variables)
             //------------------------------------------------------
             //LOG
             if (!$debug) {
-                $log = fopen("../logs/log.txt", "a");
-                fwrite($log, $logText);
-                fclose($log);
+                // $log = fopen("../logs/log.txt", "a");
+                // fwrite($log, $logText);
+                // fclose($log);
             }
             //------------------------------------------------------
 
