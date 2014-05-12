@@ -48520,3 +48520,63 @@ Stats (lunch)
 Contemp. Legal Issues
 
 <3 SchedU
+
+ . 
+ . str_repeat('#', 40) . 
+ . date('m-d-Y') . 
+----------------------------------------
+Message 1 sent to Adam Vignoodle using number 5086884042.
+Good morning Adam,
+Today is a day A6.
+
+Physics
+Psych
+Programming
+Study with Eric
+English (lunch)
+Desktop Publishing
+Calculus
+
+<3 SchedU
+----------------------------------------
+Message 2 sent to Ian Patten using number 9788752117.
+Good morning Ian,
+Today is a day A6.
+
+gRaFigz
+STAETS XD
+siyk xdd
+camblcls :)
+lel angrish :c (lunch)
+FISIKZ FUEK
+stubby xD
+
+<3 SchedU
+----------------------------------------
+Message 3 sent to Eric Watterson using number 9788702867.
+Good morning Eric,
+Today is a day A6.
+
+Graphics II
+Psych
+Programming
+Study
+Calculus (lunch)
+English
+Art
+
+<3 SchedU
+----------------------------------------
+Message 4 sent to Katie Agretelis using number 9785039907.
+Good morning Katie,
+Today is a day A6.
+
+Graphics II
+English
+Programming
+Anatomy
+Study (lunch)
+Psychology
+AP Art
+
+<3 SchedU
